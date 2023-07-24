@@ -1,42 +1,54 @@
+import { useState, useEffect } from 'react';
 import './banner.styles.css';
+import axiosInstance from '../../utils/axios';
+import REQUESTS from '../../utils/requests';
 
 const Banner = () => {
+  const [movie, setMovie] = useState({});
+
+  useEffect(() => {
+    async function fetchBannerRandomMovie() {
+      const request = await axiosInstance.get(REQUESTS.fetchNetflixOriginals);
+      const randomPick =
+        request.data.results[
+          Math.floor(Math.random() * request.data.results.length - 1)
+        ];
+      setMovie(randomPick);
+
+      return request;
+    }
+
+    fetchBannerRandomMovie();
+  }, []);
+
+  console.log('movie', movie);
+
   const truncateText = (text = '', lettersCount) => {
     return (text || '').toString().length > lettersCount
       ? text.substring(0, lettersCount - 1).concat('...')
       : text;
   };
 
+  const name = movie.title || movie.name || movie.originalName;
+  const description = movie.overview || '';
+
   return (
     <header
       className="banner"
       style={{
-        // backgroundImage: `url('https://sitehosting.com.br/wp-content/uploads//2013/09/netflix-logo1.png?_gl=1*spyzvy*_gcl_au*MjAzODkzNTMyOC4xNjg5NzA2OTkw')`,
-        backgroundColor: '#000000',
+        backgroundImage: `url('https://image.tmdb.org/t/p/original/${movie?.backdrop_path}')`,
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
       }}
     >
       <div className="banner__contents">
-        <h1 className="banner__title">Movie Name</h1>
+        <h1 className="banner__title">{name}</h1>
         <div className="banner__buttons">
           <button className="banner__button">Play</button>
           <button className="banner__button">My List</button>
         </div>
         <h1 className="banner__description">
-          {truncateText(
-            `
-        This is a test description This is a test description
-        This is a test description This is a test description
-        This is a test description This is a test description
-        This is a test description This is a test description
-        This is a test description This is a test description
-        This is a test description This is a test description
-        This is a test description This is a test description
-        This is a test description This is a test description
-        `,
-            150
-          )}
+          {truncateText(`${description}`, 150)}
         </h1>
       </div>
       <div className="banner--fadeBottom"></div>
