@@ -1,35 +1,40 @@
 import React, { useEffect } from 'react';
 import './Root.css';
 import { Home } from './routes/home/home.component';
-import {
-  createBrowserRouter,
-  Route,
-  RouterProvider,
-  Routes,
-} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Routes } from 'react-router-dom';
 import Login from './routes/login/login.component';
 import { auth } from './firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout, selectUser } from './features/user/userSlice';
+import Profile from './routes/profile/profile.component';
 
 const router = createBrowserRouter([
   { path: '/', Component: Home },
-  { path: '/test', Component: Test },
+  { path: '/profile', Component: Profile },
   { path: '*', Component: Root },
 ]);
 
 export default function App() {
-  const user = null;
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
       if (userAuth) {
-        console.log('logged user', userAuth.displayName || userAuth.email, userAuth);
+        dispatch(
+          login({
+            uid: userAuth.uid,
+            email: userAuth.email,
+          })
+        );
       } else {
         console.log('no user logged in');
+        dispatch(logout);
       }
     });
 
     return unsubscribe;
-  }, []);
+  }, [dispatch]);
 
   return (
     <React.Fragment>
@@ -46,12 +51,4 @@ export default function App() {
 
 function Root() {
   return <Routes />;
-}
-
-function Test() {
-  return (
-    <div>
-      <h1>Test component</h1>
-    </div>
-  );
 }

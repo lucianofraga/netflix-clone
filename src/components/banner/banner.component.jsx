@@ -9,10 +9,14 @@ const Banner = () => {
   useEffect(() => {
     async function fetchBannerRandomMovie() {
       const request = await axiosInstance.get(REQUESTS.fetchNetflixOriginals);
-      const randomPick =
-        request.data.results[
-          Math.floor(Math.random() * request.data.results.length - 1)
-        ];
+      let randomPick = null;
+
+      while (!randomPick) {
+        const randomNumber = Math.floor(
+          Math.random() * request.data.results.length - 1
+        );
+        randomPick = request.data.results[randomNumber];
+      }
       setMovie(randomPick);
 
       return request;
