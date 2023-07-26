@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Root.css';
 import { Home } from './routes/home/home.component';
 import {
@@ -7,6 +7,8 @@ import {
   RouterProvider,
   Routes,
 } from 'react-router-dom';
+import Login from './routes/login/login.component';
+import { auth } from './firebase';
 
 const router = createBrowserRouter([
   { path: '/', Component: Home },
@@ -15,15 +17,35 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+  const user = null;
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        console.log('logged user', userAuth.displayName || userAuth.email, userAuth);
+      } else {
+        console.log('no user logged in');
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
   return (
-    <div className="app">
-      <RouterProvider router={router} />
-    </div>
+    <React.Fragment>
+      {!user ? (
+        <Login />
+      ) : (
+        <div className="app">
+          <RouterProvider router={router} />
+        </div>
+      )}
+    </React.Fragment>
   );
 }
 
 function Root() {
-  return <Routes></Routes>;
+  return <Routes />;
 }
 
 function Test() {
