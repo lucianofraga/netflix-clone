@@ -3,6 +3,7 @@ import Navigation from '../../components/navigation/navigation.component';
 import './profile.styles.css';
 import { selectUser } from '../../features/user/userSlice';
 import { auth } from '../../firebase';
+import Plans from '../../components/plans/plans.component';
 
 const Profile = () => {
   const loggedUser = useSelector(selectUser);
@@ -24,6 +25,7 @@ const Profile = () => {
               <h2>{loggedUser.email}</h2>
                           <div className="profileScreen__plans">
                               <h3>Plans</h3>
+                              <Plans />
                 <button className="profileScreen__signOut" onClick={signOut}>
                   Sign Out
                 </button>

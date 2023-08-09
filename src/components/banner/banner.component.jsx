@@ -24,9 +24,7 @@ const Banner = () => {
 
     fetchBannerRandomMovie();
   }, []);
-
-  console.log('movie', movie);
-
+  
   const truncateText = (text = '', lettersCount) => {
     return (text || '').toString().length > lettersCount
       ? text.substring(0, lettersCount - 1).concat('...')

@@ -20,6 +20,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 const db = getFirestore(firebaseApp);
+
 const auth = getAuth();
 const signUp = (email, password) => createUserWithEmailAndPassword(auth, email, password);
 const signIn = (email, password) => signInWithEmailAndPassword(auth, email, password);
